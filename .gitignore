@@ -1,0 +1,8 @@
+# Ignore all vscode files
+.vscode
+
+# Ignore binary built
+go-rss-feed-agg
+
+# Ignore env files
+.env
