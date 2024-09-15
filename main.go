@@ -31,9 +31,10 @@ func main() {
 		MaxAge:           300,
 	}))
 
-	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("welcome"))
-	})
+	v1Router := chi.NewRouter()
+	v1Router.Get("/health", handlerReadiness)
+
+	router.Mount("/v1", v1Router)
 
 	server := &http.Server{
 		Handler: router,
