@@ -24,19 +24,16 @@ func main() {
 	portString := os.Getenv("PORT")
 	if portString == "" {
 		log.Fatalln("PORT is not found in the environment")
-		os.Exit(1)
 	}
 
 	dbUrl := os.Getenv("DB_URL")
 	if dbUrl == "" {
-		log.Fatal("Invalid value for db connection")
-		os.Exit(1)
+		log.Fatalln("Invalid value for db connection")
 	}
 
 	dbConn, err := sql.Open("postgres", dbUrl)
 	if err != nil {
-		log.Fatal("Unable to connect to DB", err)
-		os.Exit(1)
+		log.Fatalln("Unable to connect to DB", err)
 	}
 
 	apiCfg := apiConfig{
@@ -57,7 +54,8 @@ func main() {
 
 	v1Router := chi.NewRouter()
 	v1Router.Get("/health", handleReadiness)
-	v1Router.Post("/users", apiCfg.handleCreateUser)
+	v1Router.Post("/users", apiCfg.createUserHandler)
+	v1Router.Get("/users", apiCfg.getUserHandler)
 
 	router.Mount("/v1", v1Router)
 
