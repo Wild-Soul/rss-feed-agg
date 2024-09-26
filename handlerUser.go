@@ -9,13 +9,12 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/Wild-Soul/go-rss-feed-agg/dto"
-	"github.com/Wild-Soul/go-rss-feed-agg/internal/auth"
 	"github.com/Wild-Soul/go-rss-feed-agg/internal/database"
 )
 
 // Adds a new user to database.
 // TODO:: Custom json parse so as to enforce required field (Name) constraint.
-func (apiCfg *apiConfig) createUserHandler(w http.ResponseWriter, r *http.Request) {
+func (apiCfg *ApiConfig) createUserHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Received request to add user")
 	type parameters struct {
 		Name string `json:"name"`
@@ -50,23 +49,8 @@ func (apiCfg *apiConfig) createUserHandler(w http.ResponseWriter, r *http.Reques
 }
 
 // Gets a user from database based on ApiKey provided in auth header.
-func (apiCfg *apiConfig) getUserHandler(w http.ResponseWriter, r *http.Request) {
+func (apiCfg *ApiConfig) getUserHandler(w http.ResponseWriter, r *http.Request, user database.User) {
 	fmt.Println("Received a get user details request")
-	apiKey, err := auth.ExtractApiKey(r.Header)
-
-	if err != nil {
-		fmt.Printf("[Error]:[getUserHandler]: %v\n", err)
-		respondWithError(w, 403, fmt.Sprintf("Auth error: %v", err))
-		return
-	}
-
-	user, err := apiCfg.DB.GetUserByApiKey(r.Context(), apiKey)
-	if err != nil {
-		fmt.Printf("[Error]:[getUserHandler]: %v\n", err)
-		// TODO:: need to handle different users.
-		respondWithError(w, 400, fmt.Sprintf("Failed to get user: %v", err.Error()))
-		return
-	}
 
 	userdto := &dto.UserDTO{}
 	userdto.FromDbUser(user)

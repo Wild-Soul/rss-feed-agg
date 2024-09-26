@@ -13,7 +13,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-type apiConfig struct {
+type ApiConfig struct {
 	DB *database.Queries
 }
 
@@ -36,7 +36,7 @@ func main() {
 		log.Fatalln("Unable to connect to DB", err)
 	}
 
-	apiCfg := apiConfig{
+	apiCfg := ApiConfig{
 		DB: database.New(dbConn),
 	}
 
@@ -55,7 +55,9 @@ func main() {
 	v1Router := chi.NewRouter()
 	v1Router.Get("/health", handleReadiness)
 	v1Router.Post("/users", apiCfg.createUserHandler)
-	v1Router.Get("/users", apiCfg.getUserHandler)
+	v1Router.Get("/users", apiCfg.authMiddleware(apiCfg.getUserHandler))
+	v1Router.Post("/feeds", apiCfg.authMiddleware(apiCfg.handleCreateFeed))
+	v1Router.Get("/feeds", apiCfg.getFeedsHandler)
 
 	router.Mount("/v1", v1Router)
 
