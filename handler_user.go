@@ -25,7 +25,7 @@ func (apiCfg *ApiConfig) createUserHandler(w http.ResponseWriter, r *http.Reques
 	err := decoder.Decode(&params)
 	if err != nil {
 		fmt.Printf("[Error]:[createUserHandler]: %v\n", err)
-		respondWithError(w, 400, fmt.Sprintf("Error parsing JSON: %v", err))
+		respondWithError(w, 400, fmt.Sprintf("Error parsing JSON: %v\n", err.Error()))
 		return
 	}
 
@@ -37,8 +37,8 @@ func (apiCfg *ApiConfig) createUserHandler(w http.ResponseWriter, r *http.Reques
 	})
 
 	if err != nil {
-		fmt.Printf("[Error]:[createUserHandler]: %v\n", err)
-		respondWithError(w, 500, fmt.Sprintf("Failed to create user %v", err))
+		fmt.Printf("[Error]:[createUserHandler]: %v\n", err.Error())
+		respondWithError(w, 500, fmt.Sprintf("Failed to create user %v\n", err.Error()))
 		return
 	}
 	userdto := &dto.UserDTO{}

@@ -5,8 +5,10 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/Wild-Soul/go-rss-feed-agg/internal/database"
+	"github.com/Wild-Soul/go-rss-feed-agg/worker"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
@@ -36,9 +38,13 @@ func main() {
 		log.Fatalln("Unable to connect to DB", err)
 	}
 
+	db := database.New(dbConn)
 	apiCfg := ApiConfig{
-		DB: database.New(dbConn),
+		DB: db,
 	}
+
+	// Start worker in separate go routine.
+	go worker.StartScraping(db, 10, time.Minute*5)
 
 	router := chi.NewRouter()
 

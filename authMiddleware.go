@@ -16,7 +16,7 @@ func (apiCfg *ApiConfig) authMiddleware(handler authedHandler) http.HandlerFunc 
 
 		if err != nil {
 			fmt.Printf("[Error]:[getUserHandler]: %v\n", err)
-			respondWithError(w, 403, fmt.Sprintf("Auth error: %v", err))
+			respondWithError(w, 400, fmt.Sprintf("Invalid api key: %v\n", err.Error()))
 			return
 		}
 
@@ -24,7 +24,7 @@ func (apiCfg *ApiConfig) authMiddleware(handler authedHandler) http.HandlerFunc 
 		if err != nil {
 			fmt.Printf("[Error]:[getUserHandler]: %v\n", err)
 			// TODO:: need to handle different users.
-			respondWithError(w, 400, fmt.Sprintf("Failed to get user: %v", err.Error()))
+			respondWithError(w, 404, fmt.Sprintf("User not found: %v\n", err.Error()))
 			return
 		}
 		handler(w, r, user)

@@ -48,7 +48,7 @@ func (apiCfg *ApiConfig) handleGetFeedFollows(w http.ResponseWriter, r *http.Req
 	feedFollows, err := apiCfg.DB.GetFeedFollows(r.Context(), user.ID)
 	if err != nil {
 		fmt.Printf("Couldn't get feed follows: %v\n", err)
-		respondWithError(w, 500, fmt.Sprintf("Couldn't get feed follows: %v", err))
+		respondWithError(w, 500, fmt.Sprintf("Couldn't get feed follows: %v\n", err))
 		return
 	}
 
@@ -58,7 +58,7 @@ func (apiCfg *ApiConfig) handleGetFeedFollows(w http.ResponseWriter, r *http.Req
 		response.FromDbFeed(feedFollow)
 		feedFollowsDto[i] = response
 	}
-	fmt.Printf("Retrieved feed_follows for user: %v", user.ID)
+	fmt.Printf("Retrieved feed_follows for user: %v\n", user.ID)
 	respondWithJSON(w, 200, feedFollowsDto)
 }
 
@@ -67,7 +67,7 @@ func (apiCfg *ApiConfig) handleDeleteFeedFollow(w http.ResponseWriter, r *http.R
 	feedFollowId, err := uuid.Parse(feedFollowIdStr)
 	if err != nil {
 		fmt.Printf("Couldn't parse feed follow id: %v\n", err)
-		respondWithError(w, 400, fmt.Sprintf("Couldn't parse feed follow id: %v", err))
+		respondWithError(w, 400, fmt.Sprintf("Couldn't parse feed follow id: %v\n", err))
 		return
 	}
 
@@ -78,9 +78,9 @@ func (apiCfg *ApiConfig) handleDeleteFeedFollow(w http.ResponseWriter, r *http.R
 
 	if err != nil {
 		fmt.Printf("Couldn't delete feed follow, error: %v", err)
-		respondWithError(w, 500, fmt.Sprintf("Couldn't delete feed follow: %v", err))
+		respondWithError(w, 500, fmt.Sprintf("Couldn't delete feed follow: %v\n", err))
 		return
 	}
-	fmt.Printf("Deleted feed_follow with id: %v for user: %v", feedFollowId, user.ID)
+	fmt.Printf("Deleted feed_follow with id: %v for user: %v\n", feedFollowId, user.ID)
 	respondWithJSON(w, 200, struct{}{})
 }

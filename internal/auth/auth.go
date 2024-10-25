@@ -2,7 +2,7 @@ package auth
 
 import (
 	"errors"
-	"fmt"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -25,6 +25,6 @@ func ExtractApiKey(headers http.Header) (string, error) {
 		return "", errors.New("malformed auth header")
 	}
 
-	fmt.Println("Request authenticated")
+	log.Println("Request authenticated")
 	return vals[1], nil
 }
