@@ -86,12 +86,18 @@ func (q *Queries) GetFeeds(ctx context.Context) ([]Feed, error) {
 
 const getNextFeedsToFetch = `-- name: GetNextFeedsToFetch :many
 select id, created_at, updated_at, name, url, user_id, last_fetched_at from feeds
-order by last_fetched_at asc nulls first
-limit $1
+where last_fetched_at < $1
+order by last_fetched_at asc
+limit $2
 `
 
-func (q *Queries) GetNextFeedsToFetch(ctx context.Context, limit int32) ([]Feed, error) {
-	rows, err := q.db.QueryContext(ctx, getNextFeedsToFetch, limit)
+type GetNextFeedsToFetchParams struct {
+	LastFetchedAt time.Time
+	Limit         int32
+}
+
+func (q *Queries) GetNextFeedsToFetch(ctx context.Context, arg GetNextFeedsToFetchParams) ([]Feed, error) {
+	rows, err := q.db.QueryContext(ctx, getNextFeedsToFetch, arg.LastFetchedAt, arg.Limit)
 	if err != nil {
 		return nil, err
 	}

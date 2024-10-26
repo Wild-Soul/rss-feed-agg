@@ -8,8 +8,9 @@ select * from feeds;
 
 -- name: GetNextFeedsToFetch :many
 select * from feeds
-order by last_fetched_at asc nulls first
-limit $1;
+where last_fetched_at < $1
+order by last_fetched_at asc
+limit $2;
 
 -- name: MarkFeedAsFetched :one
 update feeds
